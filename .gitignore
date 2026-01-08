@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Database
+data/
+
+# Environment
+.env
+
+# Build output
+dist/
+frontend/dist/
+
+# OS files
+.DS_Store
