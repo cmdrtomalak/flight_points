@@ -2,15 +2,15 @@ import 'dotenv/config';
 
 export const config = {
   // Server ports
-  port: parseInt(process.env.PORT || '3000', 10),
+  port: parseInt(process.env.BACKEND_PORT || '3000', 10),
   frontendPort: parseInt(process.env.FRONTEND_PORT || '8095', 10),
-  
+
   // Cache duration in days (configurable)
   cacheDurationDays: parseInt(process.env.CACHE_DURATION_DAYS || '5', 10),
-  
+
   // Database
   dbPath: process.env.DB_PATH || './data/flights.db',
-  
+
   // Airline credentials (for airlines that require login)
   credentials: {
     aeroplan: {
@@ -26,7 +26,7 @@ export const config = {
       password: process.env.KRISFLYER_PASSWORD,
     },
   },
-  
+
   // Supported airlines (code -> display name)
   airlines: {
     'ac': 'Aeroplan (Air Canada)',

@@ -4,7 +4,7 @@ The Flight Points Dashboard is now set up! This local application allows you to 
 
 ## System Architecture
 
-- **Backend**: Bun + Hono + Native SQLite (Port 3000)
+- **Backend**: Bun + Hono + Native SQLite (default port 3000)
 - **Frontend**: SolidJS + Vite (Port 8095)
 - **Data Source**: Mock scraper (configurable to use Flightplan)
 
@@ -18,7 +18,7 @@ To run the application, you need two terminal windows:
 cd /Users/kwaliu/src/tries/flight_points
 bun run dev
 ```
-Current Status: **Running in background** (Port 3000)
+Current Status: **Running in background** (BACKEND_PORT, default 3000)
 
 ### 2. Start the Frontend Dashboard
 
@@ -43,14 +43,14 @@ You can adjust settings by creating a `.env` file in the project root:
 
 ```bash
 # Example .env configuration
-PORT=3000           # Backend API Port
+BACKEND_PORT=3000   # Backend API Port
 FRONTEND_PORT=8095  # Frontend Dashboard Port
 CACHE_DURATION_DAYS=5
 ```
 
 To change the ports:
 1. Create or edit `.env` in the root directory.
-2. Add `PORT=4000` (or your desired backend port).
+2. Add `BACKEND_PORT=4000` (or your desired backend port).
 3. Add `FRONTEND_PORT=9000` (or your desired frontend port).
 4. Restart both backend and frontend terminals.
 

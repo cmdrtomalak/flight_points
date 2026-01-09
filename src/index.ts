@@ -5,7 +5,7 @@ import { initDatabase, cleanupOldData, getCacheDurationDays } from './db';
 import routes from './routes';
 
 // Configuration
-const PORT = parseInt(process.env.PORT || '3000', 10);
+const PORT = parseInt(process.env.BACKEND_PORT || '3000', 10);
 const FRONTEND_PORT = parseInt(process.env.FRONTEND_PORT || '8095', 10);
 
 const app = new Hono();
