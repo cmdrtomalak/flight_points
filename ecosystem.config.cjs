@@ -1,3 +1,6 @@
+// Load dotenv to read .env file
+require('dotenv').config();
+
 module.exports = {
     apps: [
         {
