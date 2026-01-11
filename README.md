@@ -49,7 +49,7 @@ CACHE_DURATION_DAYS=5
 
 # Database Config
 DB_TYPE=sqlite      # Options: sqlite (default), postgres
-DB_PATH=./data/flights.db
+DB_PATH=./data/flights.db # Path to SQLite file (needed for migration)
 
 # PostgreSQL Config (Only if DB_TYPE=postgres)
 POSTGRES_HOST=localhost
@@ -64,10 +64,28 @@ POSTGRES_DB=flight_points_db
 To switch from the default SQLite backend to PostgreSQL 18:
 
 1.  **Install PostgreSQL**: Ensure you have PostgreSQL 18 installed and running.
-2.  **Create Database**: Create the database `flight_points_db`.
+2.  **Create Database**: You need to create the database manually before running the app. You can do this via the command line or a GUI tool.
+
+    **Option A: Command Line (psql)**
     ```bash
-    createdb flight_points_db
+    # Connect to default postgres DB
+    psql -U postgres
+
+    # Run SQL command
+    CREATE DATABASE flight_points_db;
+    \q
     ```
+
+    **Option B: Command Line (createdb utility)**
+    ```bash
+    createdb -U postgres flight_points_db
+    ```
+
+    **Option C: GUI Tools (PgAdmin, DBeaver, etc.)**
+    - Connect to your server.
+    - Right-click "Databases" -> Create -> Database.
+    - Name it `flight_points_db`.
+
 3.  **Configure .env**: Update your `.env` file to use Postgres:
     ```bash
     DB_TYPE=postgres
@@ -77,19 +95,22 @@ To switch from the default SQLite backend to PostgreSQL 18:
     POSTGRES_PASSWORD=your_password
     POSTGRES_DB=flight_points_db
     ```
-4.  **Restart Backend**: Restart the `bun run dev` process. The application will automatically create the necessary tables on startup.
+4.  **Restart Backend**: Restart the `bun run dev` process. The application will automatically create the necessary tables (`searches`, `awards`) in the new database on startup.
 
 ### Migrating Data (SQLite to PostgreSQL)
 
-If you have existing data in SQLite and want to move it to PostgreSQL:
+If you have existing data in SQLite and want to move it to PostgreSQL, follow these steps. The migration script uses `DB_PATH` as the **source** (SQLite) and the Postgres config variables as the **destination**.
 
-1.  Ensure your `.env` is configured for PostgreSQL (as above).
-2.  Ensure your SQLite file exists (default: `./data/flights.db`).
-3.  Run the migration script:
+1.  **Keep DB_PATH**: Do not remove `DB_PATH` from your `.env` file. It must point to your existing SQLite file (e.g., `./data/flights.db`).
+2.  **Set DB_TYPE**: It doesn't matter if `DB_TYPE` is set to `sqlite` or `postgres` for the migration script itself, but you should have your Postgres credentials configured.
+3.  **Run the Script**:
     ```bash
     bun src/scripts/migrate.ts
     ```
-    This will copy all searches and award results from the SQLite file to your PostgreSQL database.
+    *   The script reads all data from the file at `DB_PATH`.
+    *   It inserts it into the database configured by `POSTGRES_...` variables.
+    *   It preserves relationships between Searches and Awards.
+4.  **Verify**: Start the app with `DB_TYPE=postgres` and check your previous search history.
 
 ## Troubleshooting
 
