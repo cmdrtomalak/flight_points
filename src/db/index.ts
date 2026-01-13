@@ -10,13 +10,7 @@ const config = {
   cacheDurationDays: parseInt(process.env.CACHE_DURATION_DAYS || '5', 10),
   dbType: process.env.DB_TYPE || 'sqlite', // 'sqlite' or 'postgres'
   dbPath: process.env.DB_PATH || './data/flights.db',
-  postgres: {
-    host: process.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
-    user: process.env.POSTGRES_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || 'postgres',
-    database: process.env.POSTGRES_DB || 'flight_points_db',
-  }
+  postgresUrl: process.env.DATABASE_URL || 'postgresql://flights_admin:postgres@localhost:5432/flight_points_db'
 };
 
 let adapter: DatabaseAdapter | null = null;
@@ -25,7 +19,7 @@ export async function initDatabase(): Promise<void> {
   if (adapter) return;
 
   if (config.dbType === 'postgres') {
-    adapter = new PostgresAdapter(config.postgres, config.cacheDurationDays);
+    adapter = new PostgresAdapter({ connectionString: config.postgresUrl }, config.cacheDurationDays);
   } else {
     adapter = new SqliteAdapter(config.dbPath, config.cacheDurationDays);
   }

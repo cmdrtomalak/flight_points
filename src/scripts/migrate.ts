@@ -3,16 +3,10 @@ import { Pool } from 'pg';
 import { existsSync } from 'fs';
 
 const sqlitePath = process.env.DB_PATH || './data/flights.db';
-const postgresConfig = {
-    host: process.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
-    user: process.env.POSTGRES_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || 'postgres',
-    database: process.env.POSTGRES_DB || 'flight_points_db',
-};
+const postgresUrl = process.env.DATABASE_URL || 'postgresql://flights_admin:postgres@localhost:5432/flight_points_db';
 
 async function migrate() {
-    console.log(`Migrating data from SQLite (${sqlitePath}) to PostgreSQL (${postgresConfig.host}:${postgresConfig.port}/${postgresConfig.database})...`);
+    console.log(`Migrating data from SQLite (${sqlitePath}) to PostgreSQL...`);
 
     if (!existsSync(sqlitePath)) {
         console.error(`SQLite database file not found at ${sqlitePath}`);
@@ -20,7 +14,7 @@ async function migrate() {
     }
 
     const sqlite = new Database(sqlitePath);
-    const pgPool = new Pool(postgresConfig);
+    const pgPool = new Pool({ connectionString: postgresUrl });
 
     try {
         // Test Postgres connection
