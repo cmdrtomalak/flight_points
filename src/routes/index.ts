@@ -51,7 +51,7 @@ routes.post('/search', async (c) => {
 
     // Check cache first (unless force refresh)
     if (!forceRefresh) {
-        const cached = findCachedResults(origin, destination, departDate, cabin, airlines);
+        const cached = await findCachedResults(origin, destination, departDate, cabin, airlines);
         if (cached.length > 0) {
             return c.json({
                 source: 'cache',
@@ -62,7 +62,7 @@ routes.post('/search', async (c) => {
     }
 
     // Create search record
-    const searchId = createSearch({
+    const searchId = await createSearch({
         origin,
         destination,
         depart_date: departDate,
@@ -97,10 +97,10 @@ routes.post('/search', async (c) => {
                 taxes: r.taxes || 0,
                 available_seats: r.availableSeats || 0,
             }));
-            insertAwards(awards);
+            await insertAwards(awards);
         }
 
-        updateSearchStatus(searchId, 'completed');
+        await updateSearchStatus(searchId, 'completed');
 
         return c.json({
             source: 'live',
@@ -108,14 +108,14 @@ routes.post('/search', async (c) => {
             results,
         });
     } catch (error) {
-        updateSearchStatus(searchId, 'failed');
+        await updateSearchStatus(searchId, 'failed');
         console.error('Search failed:', error);
         return c.json({ error: 'Search failed', details: String(error) }, 500);
     }
 });
 
 // Get cached results
-routes.get('/results', (c) => {
+routes.get('/results', async (c) => {
     const origin = c.req.query('origin')?.toUpperCase();
     const destination = c.req.query('destination')?.toUpperCase();
     const departDate = c.req.query('departDate');
@@ -125,27 +125,27 @@ routes.get('/results', (c) => {
         return c.json({ error: 'Missing required query params' }, 400);
     }
 
-    const results = findCachedResults(origin, destination, departDate, cabin);
+    const results = await findCachedResults(origin, destination, departDate, cabin);
     return c.json({ results });
 });
 
 // Get recent searches
-routes.get('/searches', (c) => {
+routes.get('/searches', async (c) => {
     const limit = parseInt(c.req.query('limit') || '20', 10);
-    const searches = getRecentSearches(limit);
+    const searches = await getRecentSearches(limit);
     return c.json({ searches });
 });
 
 // Get results for a specific search
-routes.get('/searches/:id/awards', (c) => {
+routes.get('/searches/:id/awards', async (c) => {
     const id = parseInt(c.req.param('id'), 10);
-    const awards = getAwardsBySearchId(id);
+    const awards = await getAwardsBySearchId(id);
     return c.json({ awards });
 });
 
 // Manual cleanup
-routes.delete('/cleanup', (c) => {
-    const deleted = cleanupOldData();
+routes.delete('/cleanup', async (c) => {
+    const deleted = await cleanupOldData();
     const cacheDays = getCacheDurationDays();
     return c.json({
         deleted,
