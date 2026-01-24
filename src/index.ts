@@ -5,14 +5,13 @@ import { initDatabase, cleanupOldData, getCacheDurationDays } from './db';
 import routes from './routes';
 
 // Configuration
-const PORT = parseInt(process.env.BACKEND_PORT || '3000', 10);
-const FRONTEND_PORT = parseInt(process.env.FRONTEND_PORT || '8095', 10);
+const PORT = parseInt(process.env.BACKEND_PORT || '3003', 10);
 
 const app = new Hono();
 
-// Enable CORS for frontend dev server
+// Enable CORS
 app.use('/*', cors({
-    origin: [`http://localhost:${FRONTEND_PORT}`, 'http://localhost:3000'],
+    origin: [`http://localhost:${PORT}`],
     credentials: true,
 }));
 
@@ -56,8 +55,7 @@ async function main() {
 ╔═══════════════════════════════════════════════════════╗
 ║  Flight Points Search Dashboard                       ║
 ║                                                       ║
-║  API Server:    http://localhost:${PORT}                ║
-║  Frontend:      http://localhost:${FRONTEND_PORT}               ║
+║  Server:        http://localhost:${PORT}                ║
 ║  Cache TTL:     ${cacheDays} days                              ║
 ╚═══════════════════════════════════════════════════════╝
   `);

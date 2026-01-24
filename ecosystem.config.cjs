@@ -1,28 +1,14 @@
-// Load dotenv to read .env file
 require('dotenv').config();
 
 module.exports = {
     apps: [
         {
-            name: 'flight-points-backend',
+            name: 'flight-points',
             cwd: './',
             script: 'bun',
-            args: 'run dev',
+            args: 'run start',
             env: {
-                BACKEND_PORT: process.env.BACKEND_PORT || 3000,
-                FRONTEND_PORT: process.env.FRONTEND_PORT || 8095,
-            },
-            watch: false,
-            autorestart: true,
-        },
-        {
-            name: 'flight-points-frontend',
-            cwd: './frontend',
-            script: 'bun',
-            args: 'run dev',
-            env: {
-                BACKEND_PORT: process.env.BACKEND_PORT || 3000,
-                FRONTEND_PORT: process.env.FRONTEND_PORT || 8095,
+                BACKEND_PORT: process.env.BACKEND_PORT || 3003,
             },
             watch: false,
             autorestart: true,

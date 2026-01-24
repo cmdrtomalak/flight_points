@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun run --watch src/index.ts",
-    "build": "bun build src/index.ts --outdir dist",
+    "build:frontend": "cd frontend && bun install && bun x vite build",
+    "start": "bun run src/index.ts",
     "test": "bun test"
   },
   "dependencies": {
